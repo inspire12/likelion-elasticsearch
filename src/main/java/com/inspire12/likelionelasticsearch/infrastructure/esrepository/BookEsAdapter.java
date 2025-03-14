@@ -1,4 +1,4 @@
-package com.inspire12.likelionelasticsearch.infrastructure.repository;
+package com.inspire12.likelionelasticsearch.infrastructure.esrepository;
 
 import com.inspire12.likelionelasticsearch.domain.repository.BookRepository;
 import com.inspire12.likelionelasticsearch.infrastructure.entity.Book;
