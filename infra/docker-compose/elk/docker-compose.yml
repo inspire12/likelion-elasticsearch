@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: elasticsearch:${ELK_VERSION}
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS}
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "${ELASTIC_PORT}:9200"
+    networks:
+      - elk-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  logstash:
+    image: logstash:${ELK_VERSION}
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    environment:
+      - XPACK_MONITORING_ENABLED=false
+    ports:
+      - "${LOGSTASH_PORT}:5000"
+    networks:
+      - elk-network
+    command: >
+      logstash -e '
+      input { tcp { port => 5000 codec => json } }
+      output { elasticsearch { hosts => ["elasticsearch:9200"] } }'
+
+  kibana:
+    image: kibana:${ELK_VERSION}
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - "${KIBANA_PORT}:5601"
+    networks:
+      - elk-network
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+
+networks:
+  elk-network:
+    driver: bridge
