@@ -25,6 +25,13 @@ public class OrderController {
         return OrderFactory.createOrderResponse(order);
     }
 
+    @GetMapping("/number")
+    public OrderResponse getOrderNumber(@RequestParam String orderNumber) {
+        Order order = orderUsecase.getOrderByOrderNumber(orderNumber);
+        return OrderFactory.createOrderResponse(order);
+    }
+
+
     /**
      * Handles POST requests for creating an order.
      *

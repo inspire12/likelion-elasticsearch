@@ -13,4 +13,9 @@ public class StoreApiAdapter implements StoreStatusPort {
     public Boolean getStoreOpenStatus(Long storeId) {
         return true;
     }
+
+    @Override
+    public Boolean getStoreOpenStatusByOrderNumber(String orderNumber) {
+        return true;
+    }
 }

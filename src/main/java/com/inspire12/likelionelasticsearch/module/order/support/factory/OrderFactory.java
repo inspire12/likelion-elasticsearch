@@ -41,7 +41,7 @@ public class OrderFactory {
 
     public static Order createOrder(OrderDocument orderDocument) {
         return Order.builder()
-                .id(orderDocument.getId())
+//                .id(orderDocument.getId())
                 .storeId(orderDocument.getStoreId())
                 .createdAt(orderDocument.getCreatedAt())
                 .updatedAt(orderDocument.getUpdatedAt())
@@ -52,12 +52,11 @@ public class OrderFactory {
 
     public static OrderDocument createOrderDocument(Order order) {
         return new OrderDocument(
-                order.getId(),
+                order.getOrderNumber(),
                 order.getCustomerId(),
                 order.getStoreId(),
                 order.getCreatedAt(),
                 order.getUpdatedAt(),
-                order.getOrderStatus(),
-                order.getOrderNumber());
+                order.getOrderStatus());
     }
 }

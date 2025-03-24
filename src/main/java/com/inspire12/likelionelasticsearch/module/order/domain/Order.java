@@ -4,6 +4,7 @@ import com.inspire12.likelionelasticsearch.module.order.domain.constant.Delivery
 import com.inspire12.likelionelasticsearch.module.order.domain.constant.OrderStatus;
 import com.inspire12.likelionelasticsearch.module.order.domain.constant.OrderType;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;

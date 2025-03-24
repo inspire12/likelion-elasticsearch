@@ -6,6 +6,7 @@ import com.inspire12.likelionelasticsearch.module.order.domain.Order;
 import com.inspire12.likelionelasticsearch.module.order.domain.OrderRepository;
 import com.inspire12.likelionelasticsearch.module.order.infrastructure.document.OrderDocument;
 import com.inspire12.likelionelasticsearch.module.order.infrastructure.repository.OrderEsRepository;
+import com.inspire12.likelionelasticsearch.module.order.infrastructure.repository.entity.OrderEntity;
 import com.inspire12.likelionelasticsearch.module.order.support.factory.OrderFactory;
 import org.springframework.stereotype.Repository;
 
@@ -33,8 +34,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
 
     @Override
     public Order getOrderByOrderNumber(String orderNumber) {
-//        OrderEntity orderEntity = orderJpaRepository.findByOrderNumber(orderNumber).orElseThrow(OrderNotExistException::new);
-//        return OrderFactory.createOrder(orderEntity);
+        if (statusPort.getStoreOpenStatusByOrderNumber(orderNumber)) {
+            OrderDocument orderDocument = orderEsRepository.
+                    findByOrderNumber(orderNumber).orElseThrow(OrderNotExistException::new);
+            return OrderFactory.createOrder(orderDocument);
+        }
         throw new OrderNotExistException();
     }
 
@@ -42,6 +46,6 @@ public class OrderRepositoryAdapter implements OrderRepository {
     public Order save(Order order) {
         OrderDocument orderDocument = OrderFactory.createOrderDocument(order);
         OrderDocument orderDocumentSaved = orderEsRepository.save(orderDocument);
-        return OrderFactory.createOrder(orderDocumentSaved);
+         return OrderFactory.createOrder(orderDocumentSaved);
     }
 }

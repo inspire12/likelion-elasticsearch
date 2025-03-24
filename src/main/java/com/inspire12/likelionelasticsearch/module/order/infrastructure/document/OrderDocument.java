@@ -17,14 +17,14 @@ import java.util.UUID;
 
 public class OrderDocument {
     @Id
-    private Long id;
-    
+    private UUID orderNumber;
+
     private Long customerId;
     private Long storeId;
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
     private OrderStatus orderStatus;
-    private UUID orderNumber;
+
 
 }
