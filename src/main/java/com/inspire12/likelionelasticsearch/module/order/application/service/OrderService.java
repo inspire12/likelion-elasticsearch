@@ -11,7 +11,6 @@ import com.inspire12.likelionelasticsearch.module.order.support.mapper.OrderMapp
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +26,7 @@ public class OrderService {
     }
 
 
-    public OrderResponse getOrder(Long orderId) {
+    public OrderResponse getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId);
         if (!statusPort.getStoreOpenStatus(order.getStoreId())) {
             throw new OrderNotExistException();

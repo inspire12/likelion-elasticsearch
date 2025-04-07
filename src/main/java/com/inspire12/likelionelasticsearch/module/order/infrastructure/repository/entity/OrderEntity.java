@@ -18,18 +18,18 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "customer_id", nullable = false)
-    private Long customerId;    // 필수 칼럼으로 다시 추가됨
+    Long customerId;    // 필수 칼럼으로 다시 추가됨
 
     @Column(unique = true, nullable = false)
-    private String orderNumber;
+    String orderNumber;
 
     @Column(nullable = false)
-    private Integer totalAmount;
+    Integer totalAmount;
 
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     // 변경 메서드 (명시적 메서드로만 수정 허용)
     public void changeTotalAmount(Integer newAmount) {

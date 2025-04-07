@@ -1,8 +1,13 @@
 package com.inspire12.likelionelasticsearch.module.review.presentation.controller;
 
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewRequest;
+import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewListResponse;
+import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.service.ReviewService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/reviews")
 @RestController
@@ -15,8 +20,9 @@ public class ReviewController {
     }
 
     @GetMapping
-    public void reviews() {
-
+    public ReviewListResponse reviews(@RequestParam Long customerId, Pageable pageable) {
+        List<ReviewResponse> reviews = reviewService.getReviews(customerId, pageable);
+        return new ReviewListResponse(reviews);
     }
 
     @PostMapping

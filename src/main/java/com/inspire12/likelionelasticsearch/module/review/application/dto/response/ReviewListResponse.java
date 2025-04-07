@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewResponse {
-    private String review;
-    private Long customerId;
-    private Long orderId;
-    private Long storeId;
-    private Integer rating;
+public class ReviewListResponse {
+    private List<ReviewResponse> reviews;
 }

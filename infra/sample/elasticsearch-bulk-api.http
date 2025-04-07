@@ -5,3 +5,26 @@ POST /review/_bulk
 {"storeId":102,"customerId":502,"content":"배달이 늦어서 음식이 좀 식었네요.","rating":2,"sentiment":"부정","createdAt":"2025-04-06T13:45:00","updatedAt":"2025-04-06T13:45:00"}
 { "index": {} }
 {"storeId":103,"customerId":503,"content":"음식 맛이 괜찮았어요. 포장도 깔끔!","rating":4,"sentiment":"긍정","createdAt":"2025-04-06T14:20:00","updatedAt":"2025-04-06T14:20:00"}
+
+
+POST /_bulk
+{ "index": { "_index": "reviews", "_id": "1" } }
+{ "storeId": 101, "customerId": 501, "content": "배달이 빠르고 맛있어요!", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T12:30:00", "updatedAt": "2025-04-06T12:30:00" }
+{ "index": { "_index": "reviews", "_id": "2" } }
+{ "storeId": 102, "customerId": 502, "content": "음식이 식어서 왔어요", "rating": 2, "sentiment": "부정", "createdAt": "2025-04-06T13:00:00", "updatedAt": "2025-04-06T13:00:00" }
+{ "index": { "_index": "reviews", "_id": "3" } }
+{ "storeId": 103, "customerId": 503, "content": "양이 많고 푸짐함", "rating": 4, "sentiment": "긍정", "createdAt": "2025-04-06T14:00:00", "updatedAt": "2025-04-06T14:00:00" }
+{ "index": { "_index": "reviews", "_id": "4" } }
+{ "storeId": 101, "customerId": 504, "content": "매장이 친절해서 기분 좋았음", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T15:30:00", "updatedAt": "2025-04-06T15:30:00" }
+{ "index": { "_index": "reviews", "_id": "5" } }
+{ "storeId": 102, "customerId": 505, "content": "치킨이 눅눅했음", "rating": 2, "sentiment": "부정", "createdAt": "2025-04-06T16:00:00", "updatedAt": "2025-04-06T16:00:00" }
+{ "index": { "_index": "reviews", "_id": "6" } }
+{ "storeId": 104, "customerId": 506, "content": "주문 실수 있었지만 빠르게 대응해줌", "rating": 3, "sentiment": "중립", "createdAt": "2025-04-06T17:00:00", "updatedAt": "2025-04-06T17:00:00" }
+{ "index": { "_index": "reviews", "_id": "7" } }
+{ "storeId": 105, "customerId": 507, "content": "가성비 최고임", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T18:00:00", "updatedAt": "2025-04-06T18:00:00" }
+{ "index": { "_index": "reviews", "_id": "8" } }
+{ "storeId": 106, "customerId": 508, "content": "포장이 허술했음", "rating": 2, "sentiment": "부정", "createdAt": "2025-04-06T19:00:00", "updatedAt": "2025-04-06T19:00:00" }
+{ "index": { "_index": "reviews", "_id": "9" } }
+{ "storeId": 101, "customerId": 509, "content": "신속하고 정확한 배달", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T20:00:00", "updatedAt": "2025-04-06T20:00:00" }
+{ "index": { "_index": "reviews", "_id": "10" } }
+{ "storeId": 102, "customerId": 510, "content": "음식이 너무 짰음", "rating": 1, "sentiment": "부정", "createdAt": "2025-04-06T21:00:00", "updatedAt": "2025-04-06T21:00:00" }

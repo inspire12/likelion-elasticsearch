@@ -21,11 +21,4 @@ public interface OrderJpaRepository extends JpaRepository<OrderEntity, Long> {
     Optional<OrderEntity> findByOrderNumber(String orderNumber);
 
 
-    @Query("SELECT new com.inspire12.likelionelasticsearch.module.jpa.model.dto.OrderSummary(o.id, o.orderNumber, o.totalAmount) " +
-            "FROM OrderEntity o WHERE o.customerId = :customerId")
-    List<OrderSummary> findOrderSummariesByCustomerId(@Param("customerId") Long customerId);
-
-
-    @Query("select new com.inspire12.likelionelasticsearch.module.jpa.model.dto.OrderSum(o.customerId, sum(o.totalAmount)) from OrderEntity o where o.customerId=:customerId")
-    OrderSum sumAmountByUserId(Long customerId);
 }

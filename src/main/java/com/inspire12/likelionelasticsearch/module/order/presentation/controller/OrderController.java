@@ -4,7 +4,6 @@ import com.inspire12.likelionelasticsearch.module.order.application.dto.request.
 import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderListResponse;
 import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderResponse;
 import com.inspire12.likelionelasticsearch.module.order.application.service.OrderService;
-import com.inspire12.likelionelasticsearch.module.order.domain.Order;
 
 
 import org.springframework.data.domain.Pageable;
@@ -27,9 +26,9 @@ public class OrderController {
         return orderUsecase.getOrders(pageable);
     }
 
-    @GetMapping
+    @GetMapping("/id")
     public OrderResponse getOrderById(@RequestParam Long orderId) {
-        return orderUsecase.getOrder(orderId);
+        return orderUsecase.getOrderById(orderId);
     }
 
 
