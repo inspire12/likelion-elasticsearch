@@ -12,3 +12,11 @@ PUT /reviews
 }
 }
 }
+GET /reviews/_search
+{
+  "query": {
+    "term": {
+      "orderId": "ORD-1001"
+    }
+  }
+}
