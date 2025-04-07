@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.time.LocalDateTime;
 
 @Getter
-@Document(indexName = "review")
+@Document(indexName = "reviews")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

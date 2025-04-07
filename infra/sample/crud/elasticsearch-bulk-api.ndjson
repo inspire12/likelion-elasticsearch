@@ -1,0 +1,13 @@
+
+POST /_bulk
+{ "index": { "_index": "reviews", "_id": "1" } }
+{ "orderId": 1, "storeId": 101, "customerId": 501, "content": "배달이 빠르고 맛있어요!", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T12:30:00", "updatedAt": "2025-04-06T12:30:00" }
+{ "index": { "_index": "reviews", "_id": "2" } }
+{ "orderId": 2, "storeId": 102, "customerId": 502, "content": "음식이 식어서 왔어요", "rating": 2, "sentiment": "부정", "createdAt": "2025-04-06T13:00:00", "updatedAt": "2025-04-06T13:00:00" }
+{ "index": { "_index": "reviews", "_id": "3" } }
+{ "orderId": 3, "storeId": 103, "customerId": 503, "content": "양이 많고 푸짐함", "rating": 4, "sentiment": "긍정", "createdAt": "2025-04-06T14:00:00", "updatedAt": "2025-04-06T14:00:00" }
+{ "index": { "_index": "reviews", "_id": "4" } }
+{ "orderId": 3, "storeId": 101, "customerId": 504, "content": "매장이 친절해서 기분 좋았음", "rating": 5, "sentiment": "긍정", "createdAt": "2025-04-06T15:30:00", "updatedAt": "2025-04-06T15:30:00" }
+{ "index": { "_index": "reviews", "_id": "5" } }
+{ "orderId": 4, "storeId": 102, "customerId": 505, "content": "치킨이 눅눅했음", "rating": 2, "sentiment": "부정", "createdAt": "2025-04-06T16:00:00", "updatedAt": "2025-04-06T16:00:00" }
+...

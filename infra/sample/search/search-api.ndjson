@@ -1,0 +1,26 @@
+// 자동완성
+GET /review_v1/_search
+{
+  "suggest": {
+    "review-suggest": {
+      "prefix": "서비",
+      "completion": {
+        "field": "content.raw"
+      }
+    }
+  }
+}
+// 하이라이팅
+GET /review_v1/_search
+{
+  "query": {
+    "match": {
+      "content": "맛있는"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "content": {}
+    }
+  }
+}
