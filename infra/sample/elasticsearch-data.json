@@ -1,0 +1,9 @@
+[
+{"id": 1, "storeId": 101, "customerId": 501, "rating": 5, "content": "피자가 너무 맛있어요! 치즈가 듬뿍 들어있고 배달도 빠릅니다."},
+{"id": 2, "storeId": 102, "customerId": 502, "rating": 4, "content": "치킨이 바삭하고 맛있네요. 양념이 딱 좋아요."},
+{"id": 3, "storeId": 101, "customerId": 503, "rating": 3, "content": "맛은 괜찮았지만 배달이 좀 늦었어요."},
+{"id": 4, "storeId": 103, "customerId": 504, "rating": 5, "content": "짬뽕 국물이 진하고 해물이 싱싱해요!"},
+{"id": 5, "storeId": 102, "customerId": 505, "rating": 2, "content": "튀김이 눅눅하고 맛이 없어요."},
+{"id": 6, "storeId": 104, "customerId": 506, "rating": 4, "content": "파스타가 적당히 익고 소스가 맛있어요."},
+{"id": 7, "storeId": 101, "customerId": 507, "rating": 5, "content": "늘 맛있어서 자주 시켜 먹어요. 적극 추천합니다!"}
+]

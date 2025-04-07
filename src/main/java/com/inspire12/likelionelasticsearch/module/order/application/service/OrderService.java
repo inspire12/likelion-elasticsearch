@@ -1,51 +1,60 @@
 package com.inspire12.likelionelasticsearch.module.order.application.service;
 
-import com.inspire12.likelionelasticsearch.module.order.application.dto.OrderRequest;
 import com.inspire12.likelionelasticsearch.exception.OrderNotExistException;
-import com.inspire12.likelionelasticsearch.module.order.application.dto.OrderResponse;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.request.OrderRequest;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderListResponse;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderResponse;
+import com.inspire12.likelionelasticsearch.module.order.application.port.out.StoreStatusPort;
 import com.inspire12.likelionelasticsearch.module.order.domain.Order;
-import com.inspire12.likelionelasticsearch.module.order.domain.OrderRepository;
-import com.inspire12.likelionelasticsearch.module.order.domain.constant.OrderStatus;
-import com.inspire12.likelionelasticsearch.module.order.support.factory.OrderFactory;
-import org.apache.juli.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.inspire12.likelionelasticsearch.module.order.support.mapper.OrderMapper;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class OrderService {
+
     private final OrderRepository orderRepository;
-    private Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    public OrderService(OrderRepository orderRepository) {
+    private final StoreStatusPort statusPort;
 
+    public OrderService(OrderRepository orderRepository, StoreStatusPort statusPort) {
         this.orderRepository = orderRepository;
-    }
-
-    public Order getOrderById(Long orderId) {
-        return orderRepository.getOrderById(orderId);
+        this.statusPort = statusPort;
     }
 
 
-    public Order orderToPayment(OrderRequest orderRequest) {
+    public OrderResponse getOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId);
+        if (!statusPort.getStoreOpenStatus(order.getStoreId())) {
+            throw new OrderNotExistException();
+        }
+        return OrderMapper.toResponse(order);
+    }
 
-//        Order order = orderRepository.save(shoppingCart, orderRequest);
-//        return order
-        throw new OrderNotExistException();
+    public OrderListResponse getOrders(Pageable pageable) {
+        List<Order> orders = orderRepository.findAllBy(pageable);
+        return OrderMapper.toListResponse(orders);
     }
 
 
-    public Order getOrderByOrderNumber(String orderNumber) {
-        return orderRepository.getOrderByOrderNumber(orderNumber);
+    public OrderResponse saveOrder(OrderRequest request) {
+        Order order = orderRepository.save(OrderMapper.toDomain(request));
+        return OrderMapper.toResponse(orderRepository.save(order));
     }
 
-    public OrderResponse saveOrder(OrderRequest orderRequest) {
-        UUID orderNumber = UUID.randomUUID();
-        Order order = OrderFactory.createOrder(orderRequest, orderNumber, OrderStatus.PENDING_PAYMENT);
-        orderRepository.save(order);
-        log.info("{}", order.getId());
-        return OrderFactory.createOrderResponse(orderRepository.save(order));
+
+    public void deleteOrder(Long orderId) {
+        orderRepository.deleteById(orderId);
     }
+
+
+    public OrderResponse updateTotalAmount(Long orderId, Integer newAmount) {
+        Order order = orderRepository.updateTotalAmount(orderId, newAmount);
+        return OrderMapper.toResponse(order);
+    }
+
 }

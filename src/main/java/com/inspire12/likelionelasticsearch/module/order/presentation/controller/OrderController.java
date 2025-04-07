@@ -1,11 +1,14 @@
 package com.inspire12.likelionelasticsearch.module.order.presentation.controller;
 
-import com.inspire12.likelionelasticsearch.module.order.application.dto.OrderRequest;
-import com.inspire12.likelionelasticsearch.module.order.application.dto.OrderResponse;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.request.OrderRequest;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderListResponse;
+import com.inspire12.likelionelasticsearch.module.order.application.dto.response.OrderResponse;
 import com.inspire12.likelionelasticsearch.module.order.application.service.OrderService;
 import com.inspire12.likelionelasticsearch.module.order.domain.Order;
 
-import com.inspire12.likelionelasticsearch.module.order.support.factory.OrderFactory;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,15 +23,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public OrderResponse getOrder(@RequestParam Long orderId) {
-        Order order = orderUsecase.getOrderById(orderId);
-        return OrderFactory.createOrderResponse(order);
+    public OrderListResponse getOrders(@PageableDefault(page = 0, sort = {"id.desc"}) Pageable pageable) {
+        return orderUsecase.getOrders(pageable);
     }
 
-    @GetMapping("/number")
-    public OrderResponse getOrderNumber(@RequestParam String orderNumber) {
-        Order order = orderUsecase.getOrderByOrderNumber(orderNumber);
-        return OrderFactory.createOrderResponse(order);
+    @GetMapping
+    public OrderResponse getOrderById(@RequestParam Long orderId) {
+        return orderUsecase.getOrder(orderId);
     }
 
 

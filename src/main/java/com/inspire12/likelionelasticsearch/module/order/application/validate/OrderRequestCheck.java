@@ -1,4 +1,4 @@
-package com.inspire12.likelionelasticsearch.module.order.application.dto;
+package com.inspire12.likelionelasticsearch.module.order.application.validate;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

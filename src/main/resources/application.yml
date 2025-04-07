@@ -3,6 +3,21 @@ spring:
     name: likelion-elasticsearch
   elasticsearch:
     uris: http://localhost:9200
+  datasource:
+    url: jdbc:mysql://localhost:3306/likelion?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: likelion
+    password: likelion
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      hibernate:
+        ddl-auto: none
+      #      ddl-auto: create
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+
 
 server:
   port: 8084

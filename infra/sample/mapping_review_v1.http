@@ -1,0 +1,50 @@
+PUT /review_v1
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "korean_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": [
+            "lowercase",
+            "nori_part_of_speech"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "storeId": {
+        "type": "long"
+      },
+      "customerId": {
+        "type": "long"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "korean_analyzer",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "rating": {
+        "type": "integer"
+      },
+      "sentiment": {
+        "type": "keyword"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "updatedAt": {
+        "type": "date"
+      }
+    }
+  }
+}

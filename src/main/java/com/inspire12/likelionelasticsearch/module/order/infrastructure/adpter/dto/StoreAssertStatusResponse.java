@@ -1,6 +1,12 @@
 package com.inspire12.likelionelasticsearch.module.order.infrastructure.adpter.dto;
 
-public record StoreAssertStatusResponse(
-        boolean isOpened
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class StoreAssertStatusResponse {
+    boolean isOpened;
 }

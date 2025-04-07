@@ -1,0 +1,7 @@
+POST /review/_bulk
+{ "index": {} }
+{"storeId":101,"customerId":501,"content":"배달이 빠르고 맛있어요!","rating":5,"sentiment":"긍정","createdAt":"2025-04-06T12:30:00","updatedAt":"2025-04-06T12:30:00"}
+{ "index": {} }
+{"storeId":102,"customerId":502,"content":"배달이 늦어서 음식이 좀 식었네요.","rating":2,"sentiment":"부정","createdAt":"2025-04-06T13:45:00","updatedAt":"2025-04-06T13:45:00"}
+{ "index": {} }
+{"storeId":103,"customerId":503,"content":"음식 맛이 괜찮았어요. 포장도 깔끔!","rating":4,"sentiment":"긍정","createdAt":"2025-04-06T14:20:00","updatedAt":"2025-04-06T14:20:00"}

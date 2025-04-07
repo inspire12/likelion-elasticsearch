@@ -1,0 +1,46 @@
+package com.inspire12.likelionelasticsearch.module.review.infrastructure.document;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Document(indexName = "review")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReviewDocument {
+
+    @Id
+    private Long id;
+
+    @Field(type = FieldType.Long)
+    private Long storeId;
+
+    @Field(type = FieldType.Long)
+    private Long customerId;
+
+    @Field(type = FieldType.Text, analyzer = "nori")
+    private String content;
+
+    @Field(type = FieldType.Integer)
+    private Integer rating;
+
+    @Field(type = FieldType.Keyword)
+    private String sentiment;
+
+    @Field(type = FieldType.Date)
+    private LocalDateTime createdAt;
+
+    @Field(type = FieldType.Date)
+    private LocalDateTime updatedAt;
+}
+
