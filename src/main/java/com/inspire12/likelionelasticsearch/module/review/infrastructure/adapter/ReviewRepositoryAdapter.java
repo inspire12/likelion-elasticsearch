@@ -1,5 +1,6 @@
 package com.inspire12.likelionelasticsearch.module.review.infrastructure.adapter;
 
+import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.domain.ReviewRepository;
@@ -34,6 +35,12 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     @Override
     public void save(Review review) {
         reviewEsRepository.save(ReviewMapper.toEntity(review));
+    }
+
+    @Override
+    public void saveBulk(List<ReviewRequest> reviews) {
+        List<Review> list = reviews.stream().map(ReviewMapper::fromRequest).toList();
+        reviewEsRepository.saveBulk(list);
     }
 
     @Override

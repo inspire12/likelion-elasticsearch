@@ -33,8 +33,13 @@ public class ReviewController {
     }
 
     @PostMapping
-    public void saveReviews(@RequestBody ReviewRequest reviewRequest) {
+    public void saveReview(@RequestBody ReviewRequest reviewRequest) {
         reviewService.saveReview(reviewRequest);
+    }
+
+    @PostMapping("/bulk")
+    public void saveReviews(@RequestBody ReviewRequest reviewRequest) {
+        reviewService.saveReviewBulk(reviewRequest);
     }
 
 //    // ID로 리뷰 조회 API

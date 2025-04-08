@@ -4,6 +4,7 @@ package com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoi
 
 import co.elastic.clients.json.JsonData;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
+import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 
 
@@ -13,14 +14,12 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.data.elasticsearch.core.query.StringQuery;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Repository;
 
 // Java 기본 API
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -96,5 +95,15 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         Query nativeQuery = new StringQuery(jsonQuery);
         SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
         return hits;
+    }
+
+    @Override
+    public void saveBulk(List<Review> reviews) {
+        List<IndexQuery> queries = reviews.stream()
+                .map(review -> new IndexQueryBuilder()
+                        .withObject(review)
+                        .build())
+                .collect(Collectors.toList());
+        elasticsearchOperations.bulkIndex(queries, ReviewDocument.class);
     }
 }

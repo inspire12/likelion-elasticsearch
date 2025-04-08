@@ -35,9 +35,17 @@ public class ReviewService {
         if (!orderCheckPort.isOrdered(reviewRequest.getOrderId())) {
             return;
         }
-
         Review review = ReviewMapper.fromRequest(reviewRequest);
         reviewRepository.save(review);
+    }
+
+    public void saveReviewBulk(ReviewRequest reviewRequest) {
+//        reviewRequests.
+        List<ReviewRequest> reviewRequests = new ArrayList<>();
+        for(int i=0; i<10; i++) {
+            reviewRequests.add(reviewRequest);
+        }
+        reviewRepository.saveBulk(reviewRequests);
     }
 
     public SearchResponse<ReviewResponse> getReviews(Long customerId, Pageable pageable) {
