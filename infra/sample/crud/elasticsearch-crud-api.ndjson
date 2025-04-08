@@ -28,7 +28,6 @@ GET /reviews/_count
 
 POST /reviews/_search
 {
-
   "query": {
     "bool": {
       "must": [
