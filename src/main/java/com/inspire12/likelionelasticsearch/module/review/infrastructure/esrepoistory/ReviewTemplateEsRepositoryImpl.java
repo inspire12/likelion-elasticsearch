@@ -15,6 +15,8 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Repository;
 
 // Java 기본 API
@@ -44,21 +46,54 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 
 
     //searchByNamedQuery
+//    @Override
+//    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
+//        // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
+//        NativeQuery nativeQuery = NativeQuery.builder()
+//                .withQuery(q -> q
+//                        .bool(b -> b
+//                                .must(m -> m.match(mt -> mt.field("content").query(request.getKeyword())))
+////                                .filter(f -> f.range(r -> r.number(r1 -> r1.field("rating").gte(4.0))))
+////                                .filter(f -> f.range(r -> r.date(r2 -> r2.field("date").gte("now-1M/M"))))
+//                        ))
+////                .withSort(Sort.by(Sort.Direction.DESC, "rating"))
+//                .build();
+//
+//        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
+//
+//        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
+//        return hits;
+//    }
+
+
+    //searchByStringQuery
     @Override
     public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
         // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
-        NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q
-                        .bool(b -> b
-                                .must(m -> m.match(mt -> mt.field("content").query(request.getKeyword())))
-//                                .filter(f -> f.range(r -> r.number(r1 -> r1.field("rating").gte(4.0))))
-//                                .filter(f -> f.range(r -> r.date(r2 -> r2.field("date").gte("now-1M/M"))))
-                        ))
-//                .withSort(Sort.by(Sort.Direction.DESC, "rating"))
-                .build();
 
-        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
-
+        String jsonQuery = """
+{
+    "bool": {
+        "must": [
+        { "prefix" : { "content": "맛있" } },
+      { "range": { "rating": { "gte": 4 } } }
+    ],
+    "filter": [
+      { "term": { "storeId": 101 } }
+    ]
+  }
+}
+""".formatted(request.getKeyword());
+//{
+//  "bool": {
+//    "must": [{"match": {"content": "%s"}}],
+//    "filter": [
+//      {"range": {"rating": {"gte": 4.0}}},
+//      {"range": {"date": {"gte": "now-1M/M"}}}
+//    ]
+//  }
+//}
+        Query nativeQuery = new StringQuery(jsonQuery);
         SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
         return hits;
     }
