@@ -1,0 +1,3 @@
+# curl --location 'localhost:8084/reviews?customerId=501'
+GET localhost:8084/reviews?customerId=501
+
