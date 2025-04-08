@@ -13,12 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class ReviewRepositoryAdapter implements ReviewRepository {
 
-    //    private final ReviewJpaRepository reviewRepository;
+//    private final ReviewJpaRepository reviewRepository;
     private final ReviewEsRepository reviewEsRepository;
 
     public ReviewRepositoryAdapter(ReviewEsRepository reviewEsRepository) {
@@ -30,6 +31,7 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
         Page<ReviewDocument> allByCustomerId = reviewEsRepository.findAllByCustomerId(customerId, pageable);
         return new PageImpl<>(allByCustomerId.stream().map(ReviewMapper::fromDocument).toList(),
                 pageable, allByCustomerId.getTotalElements());
+
     }
 
     @Override
@@ -39,7 +41,7 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
 
     @Override
     public void saveBulk(List<ReviewRequest> reviews) {
-        List<Review> list = reviews.stream().map(ReviewMapper::fromRequest).toList();
+        List<ReviewDocument> list = reviews.stream().map(a -> ReviewMapper.toEntity(ReviewMapper.fromRequest(a))).toList();
         reviewEsRepository.saveBulk(list);
     }
 

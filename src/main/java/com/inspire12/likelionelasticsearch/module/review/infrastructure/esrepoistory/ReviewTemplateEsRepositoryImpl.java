@@ -98,7 +98,7 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
     }
 
     @Override
-    public void saveBulk(List<Review> reviews) {
+    public void saveBulk(List<ReviewDocument> reviews) {
         List<IndexQuery> queries = reviews.stream()
                 .map(review -> new IndexQueryBuilder()
                         .withObject(review)
