@@ -13,9 +13,13 @@ public class ReviewMapper {
     }
 
     public static ReviewDocument toEntity(Review review) {
-
-
-        return new ReviewDocument();
+        return ReviewDocument.builder()
+                .orderId(review.getOrderId())
+                .rating(review.getRating())
+                .content(review.getReview())
+                .storeId(review.getStoreId())
+                .customerId(review.getCustomerId())
+                .build();
     }
 
     public static Review fromDocument(ReviewDocument reviewDocument) {
