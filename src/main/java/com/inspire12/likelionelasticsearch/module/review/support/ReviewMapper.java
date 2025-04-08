@@ -19,6 +19,7 @@ public class ReviewMapper {
     }
 
     public static ReviewDocument toEntity(Review review) {
+        // TODO
         return ReviewDocument.builder()
                 .orderId(review.getOrderId())
                 .rating(review.getRating())
@@ -29,6 +30,7 @@ public class ReviewMapper {
     }
 
     public static Review fromDocument(ReviewDocument reviewDocument) {
+        // TODO
         return Review.builder()
 
                 .orderId(reviewDocument.getOrderId())
