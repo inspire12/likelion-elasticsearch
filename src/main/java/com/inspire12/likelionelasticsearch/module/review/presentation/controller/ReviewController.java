@@ -24,14 +24,12 @@ public class ReviewController {
 
     @GetMapping
     public SearchResponse<ReviewResponse> getReviews(@RequestParam Long customerId, Pageable pageable) {
-        Page<ReviewResponse> reviews = reviewService.getReviews(customerId, pageable);
-        return SearchResponse.of(reviews);
+        return reviewService.getReviews(customerId, pageable);
     }
 
     @PostMapping("/search")
-    public ReviewListResponse search(@RequestBody ReviewSearchRequest request) {
-        List<ReviewResponse> reviews = reviewService.search(request);
-        return new ReviewListResponse(reviews);
+    public SearchResponse<ReviewResponse> search(@RequestBody ReviewSearchRequest request) {
+        return reviewService.search(request);
     }
 
     @PostMapping

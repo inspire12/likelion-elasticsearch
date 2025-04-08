@@ -17,4 +17,8 @@ public class SearchResponse<T> {
     public static <T> SearchResponse of(Page<T> content) {
         return new SearchResponse(content.getContent(), content.getTotalElements(), content.getPageable().getPageNumber(), content.getPageable().getPageSize());
     }
+    public static <T> SearchResponse of(List<T> content, long totalElements, int page, int size) {
+        return new SearchResponse(content, totalElements, page, size);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.inspire12.likelionelasticsearch.module.review.application.service;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
+import com.inspire12.likelionelasticsearch.module.review.application.dto.response.SearchResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.port.out.OrderCheckPort;
 import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.domain.ReviewRepository;
@@ -32,30 +33,31 @@ public class ReviewService {
 
     public void saveReview(ReviewRequest reviewRequest) {
         if (!orderCheckPort.isOrdered(reviewRequest.getOrderId())) {
-             return ;
+            return;
         }
 
         Review review = ReviewMapper.fromRequest(reviewRequest);
         reviewRepository.save(review);
     }
 
-    public Page<ReviewResponse> getReviews(Long customerId, Pageable pageable) {
+    public SearchResponse<ReviewResponse> getReviews(Long customerId, Pageable pageable) {
         Page<Review> reviewsByCustomerId = reviewRepository.getReviewsByCustomerId(customerId, pageable);
         List<ReviewResponse> reviewResponses = new ArrayList<>();
         for (Review review : reviewsByCustomerId) {
             reviewResponses.add(ReviewMapper.toResponse(review));
         }
-        return new PageImpl<>(reviewResponses, reviewsByCustomerId.getPageable(), reviewsByCustomerId.getTotalElements());
+        PageImpl<ReviewResponse> reviews = new PageImpl<>(reviewResponses, reviewsByCustomerId.getPageable(), reviewsByCustomerId.getTotalElements());
+        return SearchResponse.of(reviews);
     }
 
 
-    public List<ReviewResponse> search(ReviewSearchRequest request) {
+    public SearchResponse<ReviewResponse> search(ReviewSearchRequest request) {
         SearchHits<ReviewDocument> search = reviewRepository.search(request);
 
         List<ReviewResponse> contents = search.getSearchHits().stream()
                 .map(SearchHit::getContent)
                 .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
                 .toList();
-        return contents;
+        return SearchResponse.of(contents, search.getTotalHits(), 0,  search.getSearchHits().size());
     }
 }
