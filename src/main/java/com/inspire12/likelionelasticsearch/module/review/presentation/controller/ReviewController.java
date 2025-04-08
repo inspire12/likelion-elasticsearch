@@ -4,7 +4,9 @@ import com.inspire12.likelionelasticsearch.module.review.application.dto.request
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewListResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
+import com.inspire12.likelionelasticsearch.module.review.application.dto.response.SearchResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.service.ReviewService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,9 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ReviewListResponse getReviews(@RequestParam Long customerId, Pageable pageable) {
-        List<ReviewResponse> reviews = reviewService.getReviews(customerId, pageable);
-        return new ReviewListResponse(reviews);
+    public SearchResponse<ReviewResponse> getReviews(@RequestParam Long customerId, Pageable pageable) {
+        Page<ReviewResponse> reviews = reviewService.getReviews(customerId, pageable);
+        return SearchResponse.of(reviews);
     }
 
     @PostMapping("/search")

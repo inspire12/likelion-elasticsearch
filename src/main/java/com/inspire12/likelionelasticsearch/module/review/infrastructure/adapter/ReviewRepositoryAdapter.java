@@ -6,6 +6,8 @@ import com.inspire12.likelionelasticsearch.module.review.domain.ReviewRepository
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoistory.ReviewEsRepository;
 import com.inspire12.likelionelasticsearch.module.review.support.ReviewMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
@@ -15,7 +17,7 @@ import java.util.List;
 @Repository
 public class ReviewRepositoryAdapter implements ReviewRepository {
 
-//    private final ReviewJpaRepository reviewRepository;
+    //    private final ReviewJpaRepository reviewRepository;
     private final ReviewEsRepository reviewEsRepository;
 
     public ReviewRepositoryAdapter(ReviewEsRepository reviewEsRepository) {
@@ -23,9 +25,10 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     }
 
     @Override
-    public List<Review> getReviewsByCustomerId(Long customerId, Pageable pageable) {
-        return reviewEsRepository.findAllByCustomerId(customerId, Pageable.ofSize(10))
-                .getContent().stream().map(ReviewMapper::fromDocument).toList();
+    public Page<Review> getReviewsByCustomerId(Long customerId, Pageable pageable) {
+        Page<ReviewDocument> allByCustomerId = reviewEsRepository.findAllByCustomerId(customerId, pageable);
+        return new PageImpl<>(allByCustomerId.stream().map(ReviewMapper::fromDocument).toList(),
+                pageable, allByCustomerId.getTotalElements());
     }
 
     @Override
@@ -34,7 +37,7 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     }
 
     @Override
-    public SearchHits<ReviewDocument> search(ReviewSearchRequest request){
+    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
         return reviewEsRepository.search(request);
     }
 }

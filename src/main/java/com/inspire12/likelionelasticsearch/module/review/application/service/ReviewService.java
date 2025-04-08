@@ -8,6 +8,9 @@ import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.domain.ReviewRepository;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 import com.inspire12.likelionelasticsearch.module.review.support.ReviewMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -36,13 +39,13 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<ReviewResponse> getReviews(Long customerId, Pageable pageable) {
-        List<Review> reviewsByCustomerId = reviewRepository.getReviewsByCustomerId(customerId, pageable);
+    public Page<ReviewResponse> getReviews(Long customerId, Pageable pageable) {
+        Page<Review> reviewsByCustomerId = reviewRepository.getReviewsByCustomerId(customerId, pageable);
         List<ReviewResponse> reviewResponses = new ArrayList<>();
         for (Review review : reviewsByCustomerId) {
             reviewResponses.add(ReviewMapper.toResponse(review));
         }
-        return reviewResponses;
+        return new PageImpl<>(reviewResponses, reviewsByCustomerId.getPageable(), reviewsByCustomerId.getTotalElements());
     }
 
 
