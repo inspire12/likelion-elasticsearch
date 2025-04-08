@@ -24,3 +24,65 @@ GET /review_v1/_search
     }
   }
 }
+
+// 자동완성
+// 변경할 인덱스
+PUT /reviews_v2
+{
+  "mappings": {
+    "properties": {
+      "storeId": {
+        "type": "long"
+      },
+      "orderId": {
+        "type": "long"
+      },
+      "customerId": {
+        "type": "long"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "nori"
+      },
+      "rating": {
+        "type": "long"
+      },
+      "sentiment": {
+        "type": "keyword",
+        "fields": {
+          "suggest": {
+            "type": "completion"
+          }
+        }
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "updatedAt": {
+        "type": "date"
+      }
+    }
+  }
+}
+// 인덱스 이전
+POST _reindex
+{
+  "source": {
+    "index": "reviews"
+  },
+  "dest": {
+    "index": "reviews_v2"
+  }
+}
+
+GET /reviews_v2/_search
+{
+  "suggest": {
+    "sentiment-suggest": {
+      "prefix": "긍",
+      "completion": {
+        "field": "sentiment.suggest"
+      }
+    }
+  }
+}
