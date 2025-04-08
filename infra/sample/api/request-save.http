@@ -1,0 +1,24 @@
+# curl --location 'localhost:8084/reviews'
+#--header 'Content-Type: application/json'
+#--data '{
+#    "review": "hihi",
+#    "customerId": 501,
+#    "orderId": 3,
+#    "storeId": 1,
+#    "rating": 5,
+#    "sentimental": "positiv"
+#}'
+POST localhost:8084/reviews
+Content-Type: application/json
+
+{
+  "review": "hihi",
+  "customerId": 501,
+  "orderId": 3,
+  "storeId": 1,
+  "rating": 5,
+  "sentimental": "긍정"
+}
+
+###
+
