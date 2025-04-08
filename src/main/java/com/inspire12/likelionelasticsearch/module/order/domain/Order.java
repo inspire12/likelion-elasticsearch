@@ -3,6 +3,7 @@ package com.inspire12.likelionelasticsearch.module.order.domain;
 import com.inspire12.likelionelasticsearch.module.order.domain.constant.DeliveryStatus;
 import com.inspire12.likelionelasticsearch.module.order.domain.constant.OrderStatus;
 import com.inspire12.likelionelasticsearch.module.order.domain.constant.OrderType;
+
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.lang.Nullable;
@@ -37,7 +38,7 @@ public class Order {
     @Nullable
     private DeliveryStatus deliveryStatus;
 
-    private Long deliveryPrice = 0L;
+    private Long deliveryPrice;
 
     private LocalDateTime createdAt;
 

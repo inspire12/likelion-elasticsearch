@@ -27,6 +27,6 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
 
     @Override
     public void save(Review review) {
-        reviewEsRepository.save(ReviewMapper.toEntity(review));
+//        reviewEsRepository.save(ReviewMapper.toEntity(review));
     }
 }
