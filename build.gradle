@@ -27,6 +27,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'co.elastic.clients:elasticsearch-java:8.11.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1' // 네트워크 통신용
+
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'

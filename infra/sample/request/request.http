@@ -1,0 +1,14 @@
+POST localhost:8084/reviews
+Content-Type: application/json
+
+{
+  "review": "hihi",
+  "customerId": 501,
+  "orderId": 3,
+  "storeId": 1,
+  "rating": 5,
+  "sentimental": "positiv"
+}
+
+###
+
