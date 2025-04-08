@@ -1,6 +1,7 @@
 package com.inspire12.likelionelasticsearch.module.review.presentation.controller;
 
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewRequest;
+import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewListResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.service.ReviewService;
@@ -20,8 +21,14 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ReviewListResponse reviews(@RequestParam Long customerId, Pageable pageable) {
+    public ReviewListResponse getReviews(@RequestParam Long customerId, Pageable pageable) {
         List<ReviewResponse> reviews = reviewService.getReviews(customerId, pageable);
+        return new ReviewListResponse(reviews);
+    }
+
+    @PostMapping("/search")
+    public ReviewListResponse search(@RequestBody ReviewSearchRequest request) {
+        List<ReviewResponse> reviews = reviewService.search(request);
         return new ReviewListResponse(reviews);
     }
 

@@ -1,64 +1,40 @@
 package com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoistory;
 
-import co.elastic.clients.elasticsearch._types.SortOrder;
+// Elasticsearch Core (org.elasticsearch.*)
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.springframework.data.domain.PageRequest;
+
+
+// Spring Data Elasticsearch
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Repository;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+
+// Java 기본 API
 import java.util.List;
 
 
 @Repository
 public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepository {
-    private final ElasticsearchOperations operations;
+    private final ElasticsearchOperations elasticsearchOperations;
 
-    public ReviewTemplateEsRepositoryImpl(ElasticsearchOperations operations) {
-        this.operations = operations;
+    public ReviewTemplateEsRepositoryImpl(ElasticsearchOperations elasticsearchOperations) {
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
     @Override
-    public List<ReviewDocument> search(ReviewSearchRequest request) {
-        // TODO
+    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
+        Criteria criteria = new Criteria("content").matches(request.getKeyword());
+//                .and(new Criteria("storeId").is(request.));
 
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        CriteriaQuery query = new CriteriaQuery(criteria);
+        query.setPageable(PageRequest.of(0, 10));
 
-        // match keyword
-        if (request.getKeyword() != null && !request.getKeyword().isBlank()) {
-            boolQuery.must(QueryBuilders.matchQuery("content", request.getKeyword()));
-        }
+        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(query, ReviewDocument.class);
 
-        // dynamic filters
-        request.getDynamicFilters().forEach((key, value) -> {
-            if (value instanceof Number) {
-                boolQuery.filter(QueryBuilders.termQuery(key, value));
-            } else {
-                boolQuery.filter(QueryBuilders.termQuery(key, value.toString()));
-            }
-        });
-
-        // 정렬
-        SortBuilder<?> sort = SortBuilders
-                .fieldSort("createdAt");
-
-        NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(boolQuery)
-                .withSorts(sort)
-                .withPageable(PageRequest.of(request.getPage(), request.getSize()))
-                .build();
-
-        SearchHits<ReviewDocument> hits = operations.search(query, ReviewDocument.class);
-
-        return hits.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .toList();
+        return hits;
     }
 }

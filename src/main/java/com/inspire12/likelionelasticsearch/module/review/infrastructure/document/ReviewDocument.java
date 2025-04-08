@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class ReviewDocument {
 
     @Id
-    @Field(type = FieldType.Text, name = "id")
+    @Field(type = FieldType.Keyword, name = "id")
     private String id;
 
     @Field(type = FieldType.Long, nullValue = "0")
