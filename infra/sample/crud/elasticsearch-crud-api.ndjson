@@ -23,3 +23,15 @@ POST /reviews/_doc/123
 }
 
 DELETE /reviews/_doc/123
+
+PUT /reviews/_create/2
+{
+  "orderId": 2,
+  "storeId": 101,
+  "customerId": 501,
+  "content": "배달이 빠르고 맛있어요!",
+  "rating": 5,
+  "sentiment": "긍정",
+  "createdAt": "2025-04-06T12:30:00",
+  "updatedAt": "2025-04-06T12:30:00"
+}
