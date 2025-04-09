@@ -41,7 +41,7 @@ public class ReviewService {
     public void saveReviewBulk(ReviewRequest reviewRequest) {
 //        reviewRequests.
         List<ReviewRequest> reviewRequests = new ArrayList<>();
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             reviewRequests.add(reviewRequest);
         }
         reviewRepository.saveBulk(reviewRequests);
@@ -65,7 +65,7 @@ public class ReviewService {
                 .map(SearchHit::getContent)
                 .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
                 .toList();
-        return SearchResponse.of(contents, search.getTotalHits(), 0,  search.getSearchHits().size());
+        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
     }
 
     public SearchResponse<ReviewResponse> searchByUserInfo(ReviewSearchRequest request) {
@@ -75,6 +75,9 @@ public class ReviewService {
                 .map(SearchHit::getContent)
                 .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
                 .toList();
-        return SearchResponse.of(contents, search.getTotalHits(), 0,  search.getSearchHits().size());
+        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
     }
+
+
+
 }

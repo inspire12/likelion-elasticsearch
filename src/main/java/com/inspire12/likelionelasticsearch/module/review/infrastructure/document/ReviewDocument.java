@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.*;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Document(indexName = "reviews")
@@ -37,9 +38,14 @@ public class ReviewDocument {
     @Field(type = FieldType.Keyword)
     private String sentiment;
 
-    // 중첩 구조로 저장될 댓글
-    @Field(type = FieldType.Nested, includeInParent = true)
+    // TODO
+    @Field(type = FieldType.Object, includeInParent = true)
     private UserInfoSubDocument userInfo;
+
+//     TODO 리스트 형태라면 Nested 타입으로 사용해야한다.
+//    @Field(type = FieldType.Nested, includeInParent = true)
+//    private List<UserInfoSubDocument> userInfos;
+
 
 
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)

@@ -33,7 +33,7 @@ public class ReviewController {
     }
 
     @PostMapping("/search/userInfo")
-    public SearchResponse<ReviewResponse> searchByComment(@RequestBody ReviewSearchRequest request) {
+    public SearchResponse<ReviewResponse> searchByUserInfo(@RequestBody ReviewSearchRequest request) {
         return reviewService.searchByUserInfo(request);
     }
 

@@ -68,14 +68,9 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 
     @Override
     public SearchHits<ReviewDocument> searchByUserInfo(ReviewSearchRequest request) {
-        String wildcardIndex = "reviews-2025-*";
+        String wildcardIndex = "reviews*";
         NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q.nested(n -> n
-                        .path("userInfo")  // Nested 객체의 경로 지정
-                        .query(nq -> nq
-                                .term(t -> t.field("userInfo.username").value("inspire12"))
-                        )
-                ))
+                .withQuery(q -> q.term(t -> t.field("userInfo.username.keyword").value("inspire12")))
                 .build();
         nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
 
