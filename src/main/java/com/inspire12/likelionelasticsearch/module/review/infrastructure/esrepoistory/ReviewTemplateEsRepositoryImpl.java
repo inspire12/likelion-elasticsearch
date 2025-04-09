@@ -2,22 +2,16 @@ package com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoi
 
 // Elasticsearch Core (org.elasticsearch.*)
 
-import co.elastic.clients.json.JsonData;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
-import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 
 
 // Spring Data Elasticsearch
-import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 // Java 기본 API
 import java.time.LocalDate;
@@ -117,7 +111,8 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         elasticsearchOperations.bulkIndex(queries, ReviewDocument.class);
     }
 
-    public ReviewDocument preprocessAndSave(ReviewDocument reviewDocument) {
+    @Override
+    public ReviewDocument saveWithIndex(ReviewDocument reviewDocument) {
         // 특수문자 제거
         String cleanedContent = reviewDocument.getContent().replaceAll("[^가-힣a-zA-Z0-9\\s]", "");
         // 길이 제한

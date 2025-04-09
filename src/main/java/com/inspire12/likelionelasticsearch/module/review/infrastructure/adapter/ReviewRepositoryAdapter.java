@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -36,7 +35,9 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
 
     @Override
     public void save(Review review) {
-        reviewEsRepository.save(ReviewMapper.toEntity(review));
+//        reviewEsRepository.save(ReviewMapper.toEntity(review));
+        reviewEsRepository.saveWithIndex(ReviewMapper.toEntity(review));
+
     }
 
     @Override
