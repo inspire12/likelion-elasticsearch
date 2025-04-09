@@ -38,8 +38,10 @@ public class ReviewDocument {
     @Field(type = FieldType.Keyword)
     private String sentiment;
 
-    @CompletionField
-    private Completion suggest;
+    // 중첩 구조로 저장될 댓글
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private List<CommentDocument> comments;
+
 
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     //@Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd'T'HH:mm:ss")
