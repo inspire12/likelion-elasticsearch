@@ -2,22 +2,18 @@ package com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoi
 
 // Elasticsearch Core (org.elasticsearch.*)
 
-import co.elastic.clients.json.JsonData;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
-import com.inspire12.likelionelasticsearch.module.review.domain.Review;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 
 
 // Spring Data Elasticsearch
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 // Java 기본 API
 import java.time.LocalDate;
@@ -47,59 +43,61 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 //    }
 
 
-    //searchByNamedQuery
-//    @Override
-//    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
-//        // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
-//        NativeQuery nativeQuery = NativeQuery.builder()
-//                .withQuery(q -> q
-//                        .bool(b -> b
-//                                .must(m -> m.match(mt -> mt.field("content").query(request.getKeyword())))
-////                                .filter(f -> f.range(r -> r.number(r1 -> r1.field("rating").gte(4.0))))
-////                                .filter(f -> f.range(r -> r.date(r2 -> r2.field("date").gte("now-1M/M"))))
-//                        ))
-
-    /// /                .withSort(Sort.by(Sort.Direction.DESC, "rating"))
-//                .build();
-//
-//        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
-//
-//        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
-//        return hits;
-//    }
-
-
-    //searchByStringQuery
+//    searchByNamedQuery
     @Override
     public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
         // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
+        String wildcardIndex = "reviews-2025-*";
 
-        String jsonQuery = """
-                {
-                    "bool": {
-                        "must": [
-                        { "prefix" : { "content": "맛있" } },
-                      { "range": { "rating": { "gte": 4 } } }
-                    ],
-                    "filter": [
-                      { "term": { "storeId": 101 } }
-                    ]
-                  }
-                }
-                """.formatted(request.getKeyword());
-//{
-//  "bool": {
-//    "must": [{"match": {"content": "%s"}}],
-//    "filter": [
-//      {"range": {"rating": {"gte": 4.0}}},
-//      {"range": {"date": {"gte": "now-1M/M"}}}
-//    ]
-//  }
-//}
-        Query nativeQuery = new StringQuery(jsonQuery);
-        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .must(m -> m.match(mt -> mt.field("content").query(request.getKeyword())))
+//                                .filter(f -> f.range(r -> r.number(r1 -> r1.field("rating").gte(4.0))))
+//                                .filter(f -> f.range(r -> r.date(r2 -> r2.field("date").gte("now-1M/M"))))
+                        ))
+
+//                     .withSort(Sort.by(Sort.Direction.DESC, "rating"))
+                .build();
+
+        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
+
+        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class, IndexCoordinates.of(wildcardIndex));
         return hits;
     }
+
+
+    //searchByStringQuery
+//    @Override
+//    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
+//        // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
+//
+//        String jsonQuery = """
+//                {
+//                    "bool": {
+//                        "must": [
+//                        { "prefix" : { "content": "맛있" } },
+//                      { "range": { "rating": { "gte": 4 } } }
+//                    ],
+//                    "filter": [
+//                      { "term": { "storeId": 101 } }
+//                    ]
+//                  }
+//                }
+//                """.formatted(request.getKeyword());
+////{
+////  "bool": {
+////    "must": [{"match": {"content": "%s"}}],
+////    "filter": [
+////      {"range": {"rating": {"gte": 4.0}}},
+////      {"range": {"date": {"gte": "now-1M/M"}}}
+////    ]
+////  }
+////}
+//        Query nativeQuery = new StringQuery(jsonQuery);
+//        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class);
+//        return hits;
+//    }
 
     @Override
     public void saveBulk(List<ReviewDocument> reviews) {
@@ -117,7 +115,8 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         elasticsearchOperations.bulkIndex(queries, ReviewDocument.class);
     }
 
-    public ReviewDocument preprocessAndSave(ReviewDocument reviewDocument) {
+    @Override
+    public ReviewDocument saveWithIndex(ReviewDocument reviewDocument) {
         // 특수문자 제거
         String cleanedContent = reviewDocument.getContent().replaceAll("[^가-힣a-zA-Z0-9\\s]", "");
         // 길이 제한
