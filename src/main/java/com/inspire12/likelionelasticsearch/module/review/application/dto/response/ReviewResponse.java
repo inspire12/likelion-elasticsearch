@@ -1,5 +1,6 @@
 package com.inspire12.likelionelasticsearch.module.review.application.dto.response;
 
+import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.UserInfoSubDocument;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,4 +16,5 @@ public class ReviewResponse {
     private Long orderId;
     private Long storeId;
     private Integer rating;
+    private UserInfoSubDocument userInfo;
 }

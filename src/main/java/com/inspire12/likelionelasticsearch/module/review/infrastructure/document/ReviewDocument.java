@@ -4,7 +4,6 @@ package com.inspire12.likelionelasticsearch.module.review.infrastructure.documen
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 import java.time.LocalDateTime;
 
@@ -40,7 +39,7 @@ public class ReviewDocument {
 
     // 중첩 구조로 저장될 댓글
     @Field(type = FieldType.Nested, includeInParent = true)
-    private List<CommentDocument> comments;
+    private UserInfoSubDocument userInfo;
 
 
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)

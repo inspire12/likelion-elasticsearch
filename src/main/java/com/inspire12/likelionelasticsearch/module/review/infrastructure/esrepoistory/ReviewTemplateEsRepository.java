@@ -15,6 +15,8 @@ public interface ReviewTemplateEsRepository {
 
     SearchHits<ReviewDocument> search(ReviewSearchRequest request);
 
+    SearchHits<ReviewDocument> searchByUserInfo(ReviewSearchRequest request);
+
     void saveBulk(List<ReviewDocument> reviews);
 
     ReviewDocument saveWithIndex(ReviewDocument reviewDocument);

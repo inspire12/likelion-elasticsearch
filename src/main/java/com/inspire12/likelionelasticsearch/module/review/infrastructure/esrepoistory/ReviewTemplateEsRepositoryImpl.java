@@ -66,7 +66,22 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         return hits;
     }
 
+    @Override
+    public SearchHits<ReviewDocument> searchByUserInfo(ReviewSearchRequest request) {
+        String wildcardIndex = "reviews-2025-*";
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(q -> q.nested(n -> n
+                        .path("userInfo")  // Nested 객체의 경로 지정
+                        .query(nq -> nq
+                                .term(t -> t.field("userInfo.username").value("inspire12"))
+                        )
+                ))
+                .build();
+        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
 
+        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class, IndexCoordinates.of(wildcardIndex));
+        return hits;
+    }
     //searchByStringQuery
 //    @Override
 //    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {

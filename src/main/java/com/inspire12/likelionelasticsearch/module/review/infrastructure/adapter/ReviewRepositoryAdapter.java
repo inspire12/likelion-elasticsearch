@@ -50,4 +50,9 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
         return reviewEsRepository.search(request);
     }
+
+    @Override
+    public SearchHits<ReviewDocument> searchByUserInfo(ReviewSearchRequest request) {
+        return reviewEsRepository.searchByUserInfo(request);
+    }
 }
