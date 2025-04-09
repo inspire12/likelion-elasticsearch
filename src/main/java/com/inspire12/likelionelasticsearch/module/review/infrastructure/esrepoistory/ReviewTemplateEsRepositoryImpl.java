@@ -31,7 +31,7 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 //                .and(new Criteria("storeId").is(request.));
 
         CriteriaQuery query = new CriteriaQuery(criteria);
-        query.setPageable(PageRequest.of(0, 10));
+        query.setPageable(PageRequest.of(request.getPage(), request.getSize()));
 
         SearchHits<ReviewDocument> hits = elasticsearchOperations.search(query, ReviewDocument.class);
 
