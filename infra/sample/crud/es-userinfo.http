@@ -1,0 +1,36 @@
+# curl --location 'localhost:8084/reviews'
+#--header 'Content-Type: application/json'
+#--data-raw '{
+#"review": "hihihihi",
+#"customerId": 3501,
+#"orderId": 3,
+#"storeId": 1,
+#"rating": 5,
+#"sentimental": "긍정",
+#"name":"inspire12",
+#"userInfo": {
+#"userId": 1,
+#"username": "inspire12",
+#"email":"ox4443@naver.com"
+#}
+#}'
+POST localhost:8084/reviews
+Content-Type: application/json
+
+{
+  "review": "hihihihi",
+  "customerId": 3501,
+  "orderId": 3,
+  "storeId": 1,
+  "rating": 5,
+  "sentimental": "긍정",
+  "name": "inspire12",
+  "userInfo": {
+    "userId": 1,
+    "username": "inspire12",
+    "email": "ox4443@naver.com"
+  }
+}
+
+###
+
