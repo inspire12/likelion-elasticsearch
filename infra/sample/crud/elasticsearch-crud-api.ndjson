@@ -23,3 +23,54 @@ POST /reviews/_doc/123
 }
 
 DELETE /reviews/_doc/123
+
+GET /reviews/_count
+
+POST /reviews/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "prefix" : { "content": "맛있는" } },
+        { "range": { "rating": { "gte": 4 } } }
+      ],
+      "filter": [
+        { "term": { "storeId": 101 } }
+      ]
+    }
+  }
+}
+
+GET _all
+GET /reviews/_mapping
+GET /reviews/_search
+{
+  "suggest": {
+    "review-suggest": {
+      "prefix": "맛있",
+      "completion": {
+        "field": "content.raw"
+      }
+    }
+  }
+}
+
+GET /reviews/_search
+{
+  "query": {
+    "match": {
+      "content": "맛있는"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "content": {}
+    }
+  }
+}
+
+// TODO: Analyzer를 활용하여 "서비스가 훌륭했습니다" 검색 결과 확인
+GET /reviews/_search
+{
+  "query": {"match": {"content": "서비스가 훌륭했습니다"}}
+}

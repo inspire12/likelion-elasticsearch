@@ -1,5 +1,46 @@
+
+
+GET /reviews/_search
+{
+  "query": {
+    "term": {
+      "sentiment": "positive"
+    }
+  }
+}
+
+GET /reviews/_search
+{
+  "query": {
+    "match": {
+      "content": "맛있는"
+    }
+  }
+}
+
+GET /reviews/_search
+{
+  "query": {
+    "range": {
+      "rating": {"gte": 4}
+    }
+  }
+}
+
+POST /reviews/_search
+{
+  "query": {
+    "range": {
+      "createdAt": {
+        "gte": "2025-04-06T12:00:00",
+        "lte": "2025-04-06T18:00:00"
+      }
+    }
+  }
+}
+
 // 자동완성
-GET /review_v1/_search
+GET /reviews/_search
 {
   "suggest": {
     "review-suggest": {
@@ -11,7 +52,7 @@ GET /review_v1/_search
   }
 }
 // 하이라이팅
-GET /review_v1/_search
+GET /reviews/_search
 {
   "query": {
     "match": {

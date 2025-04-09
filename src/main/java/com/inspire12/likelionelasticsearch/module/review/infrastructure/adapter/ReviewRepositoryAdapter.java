@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,8 +25,14 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
 
     @Override
     public List<Review> getReviewsByCustomerId(Long customerId, Pageable pageable) {
-        return reviewEsRepository.findAllByCustomerId(customerId, Pageable.ofSize(10))
-                .getContent().stream().map(ReviewMapper::fromDocument).toList();
+        List<ReviewDocument> contents = reviewEsRepository.findAllByCustomerId(customerId, Pageable.ofSize(10))
+                .getContent();
+        List<Review> reviews = new ArrayList<>();
+        for (ReviewDocument content : contents) {
+            Review review = ReviewMapper.fromDocument(content);
+            reviews.add(review);
+        }
+        return reviews;
     }
 
     @Override
