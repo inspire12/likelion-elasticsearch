@@ -1,10 +1,7 @@
 package com.inspire12.likelionelasticsearch.module.review.infrastructure.document;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.annotation.Id;
@@ -33,6 +30,7 @@ public class ReviewDocument {
     @Field(type = FieldType.Long)
     private Long customerId;
 
+    @Setter
     @Field(type = FieldType.Text, analyzer = "nori")
     private String content;
 

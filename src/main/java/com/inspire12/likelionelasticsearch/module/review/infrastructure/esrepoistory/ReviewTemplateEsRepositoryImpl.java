@@ -14,10 +14,14 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 // Java 기본 API
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +47,6 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 //    }
 
 
-
     //searchByNamedQuery
 //    @Override
 //    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {
@@ -55,7 +58,8 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 ////                                .filter(f -> f.range(r -> r.number(r1 -> r1.field("rating").gte(4.0))))
 ////                                .filter(f -> f.range(r -> r.date(r2 -> r2.field("date").gte("now-1M/M"))))
 //                        ))
-////                .withSort(Sort.by(Sort.Direction.DESC, "rating"))
+
+    /// /                .withSort(Sort.by(Sort.Direction.DESC, "rating"))
 //                .build();
 //
 //        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
@@ -71,18 +75,18 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         // TODO content(review) 에서 확인, 다양한 패턴으로 검색 해보기
 
         String jsonQuery = """
-{
-    "bool": {
-        "must": [
-        { "prefix" : { "content": "맛있" } },
-      { "range": { "rating": { "gte": 4 } } }
-    ],
-    "filter": [
-      { "term": { "storeId": 101 } }
-    ]
-  }
-}
-""".formatted(request.getKeyword());
+                {
+                    "bool": {
+                        "must": [
+                        { "prefix" : { "content": "맛있" } },
+                      { "range": { "rating": { "gte": 4 } } }
+                    ],
+                    "filter": [
+                      { "term": { "storeId": 101 } }
+                    ]
+                  }
+                }
+                """.formatted(request.getKeyword());
 //{
 //  "bool": {
 //    "must": [{"match": {"content": "%s"}}],
@@ -99,11 +103,32 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
 
     @Override
     public void saveBulk(List<ReviewDocument> reviews) {
+        if (reviews.isEmpty()) {
+            return;
+        }
+        String indexName = "reviews-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
         List<IndexQuery> queries = reviews.stream()
                 .map(review -> new IndexQueryBuilder()
+                        .withIndex(indexName)
                         .withObject(review)
                         .build())
                 .collect(Collectors.toList());
         elasticsearchOperations.bulkIndex(queries, ReviewDocument.class);
+    }
+
+    public ReviewDocument preprocessAndSave(ReviewDocument reviewDocument) {
+        // 특수문자 제거
+        String cleanedContent = reviewDocument.getContent().replaceAll("[^가-힣a-zA-Z0-9\\s]", "");
+        // 길이 제한
+        if (cleanedContent.length() > 1000) {
+            cleanedContent = cleanedContent.substring(0, 1000);
+        }
+        reviewDocument.setContent(cleanedContent);
+        // index pattern 날짜별
+        String indexName = "reviews-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        elasticsearchOperations.save(reviewDocument, IndexCoordinates.of(indexName));
+
+        return reviewDocument;
     }
 }
