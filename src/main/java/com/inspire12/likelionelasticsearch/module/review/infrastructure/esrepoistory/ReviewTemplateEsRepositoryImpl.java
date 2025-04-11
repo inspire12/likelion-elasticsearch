@@ -66,7 +66,17 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         return hits;
     }
 
+    @Override
+    public SearchHits<ReviewDocument> searchByUserInfo(ReviewSearchRequest request) {
+        String wildcardIndex = "reviews*";
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(q -> q.term(t -> t.field("userInfo.username.keyword").value("inspire12")))
+                .build();
+        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
 
+        SearchHits<ReviewDocument> hits = elasticsearchOperations.search(nativeQuery, ReviewDocument.class, IndexCoordinates.of(wildcardIndex));
+        return hits;
+    }
     //searchByStringQuery
 //    @Override
 //    public SearchHits<ReviewDocument> search(ReviewSearchRequest request) {

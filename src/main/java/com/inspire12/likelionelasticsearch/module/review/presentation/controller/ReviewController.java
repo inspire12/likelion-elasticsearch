@@ -32,6 +32,11 @@ public class ReviewController {
         return reviewService.search(request);
     }
 
+    @PostMapping("/search/userInfo")
+    public SearchResponse<ReviewResponse> searchByUserInfo(@RequestBody ReviewSearchRequest request) {
+        return reviewService.searchByUserInfo(request);
+    }
+
     @PostMapping
     public void saveReview(@RequestBody ReviewRequest reviewRequest) {
         reviewService.saveReview(reviewRequest);

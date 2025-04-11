@@ -15,6 +15,7 @@ public class ReviewMapper {
                 .review(request.getReview())
                 .storeId(request.getStoreId())
                 .customerId(request.getCustomerId())
+                .userInfo(request.getUserInfo())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class ReviewMapper {
                 .content(review.getReview())
                 .storeId(review.getStoreId())
                 .customerId(review.getCustomerId())
+                .userInfo(review.getUserInfo())
                 .build();
     }
 
@@ -38,6 +40,7 @@ public class ReviewMapper {
                 .review(reviewDocument.getContent())
                 .storeId(reviewDocument.getStoreId())
                 .customerId(reviewDocument.getCustomerId())
+                .userInfo(reviewDocument.getUserInfo())
                 .build();
     }
 
@@ -48,6 +51,7 @@ public class ReviewMapper {
                 .review(review.getReview())
                 .storeId(review.getStoreId())
                 .customerId(review.getCustomerId())
+                .userInfo(review.getUserInfo())
                 .build();
     }
 }

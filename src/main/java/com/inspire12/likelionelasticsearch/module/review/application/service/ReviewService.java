@@ -11,7 +11,6 @@ import com.inspire12.likelionelasticsearch.module.review.infrastructure.document
 import com.inspire12.likelionelasticsearch.module.review.support.ReviewMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -42,7 +41,7 @@ public class ReviewService {
     public void saveReviewBulk(ReviewRequest reviewRequest) {
 //        reviewRequests.
         List<ReviewRequest> reviewRequests = new ArrayList<>();
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             reviewRequests.add(reviewRequest);
         }
         reviewRepository.saveBulk(reviewRequests);
@@ -66,6 +65,19 @@ public class ReviewService {
                 .map(SearchHit::getContent)
                 .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
                 .toList();
-        return SearchResponse.of(contents, search.getTotalHits(), 0,  search.getSearchHits().size());
+        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
     }
+
+    public SearchResponse<ReviewResponse> searchByUserInfo(ReviewSearchRequest request) {
+        SearchHits<ReviewDocument> search = reviewRepository.searchByUserInfo(request);
+
+        List<ReviewResponse> contents = search.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
+                .toList();
+        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
+    }
+
+
+
 }

@@ -2,6 +2,7 @@ package com.inspire12.likelionelasticsearch.module.review.application.dto.reques
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.UserInfoSubDocument;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,8 @@ public class ReviewRequest {
     private Long storeId;
     private Integer rating;
 
+    private UserInfoSubDocument userInfo;
     @JsonAnySetter
     Map<String, Object> dynamicField = new HashMap<>();
+
 }
