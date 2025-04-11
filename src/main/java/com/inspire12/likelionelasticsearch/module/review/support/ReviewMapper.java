@@ -54,4 +54,15 @@ public class ReviewMapper {
                 .userInfo(review.getUserInfo())
                 .build();
     }
+
+    public static Review fromEntity(ReviewDocument reviewDocument) {
+        return Review.builder()
+                .orderId(reviewDocument.getOrderId())
+                .rating(reviewDocument.getRating())
+                .review(reviewDocument.getContent())
+                .storeId(reviewDocument.getStoreId())
+                .customerId(reviewDocument.getCustomerId())
+                .userInfo(reviewDocument.getUserInfo())
+                .build();
+    }
 }

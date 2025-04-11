@@ -6,7 +6,7 @@ import com.inspire12.likelionelasticsearch.module.review.application.dto.respons
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.SearchResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.port.out.OrderCheckPort;
 import com.inspire12.likelionelasticsearch.module.review.domain.Review;
-import com.inspire12.likelionelasticsearch.module.review.domain.ReviewRepository;
+import com.inspire12.likelionelasticsearch.module.review.application.port.in.ReviewRepository;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 import com.inspire12.likelionelasticsearch.module.review.support.ReviewMapper;
 import org.springframework.data.domain.Page;
@@ -59,23 +59,21 @@ public class ReviewService {
 
 
     public SearchResponse<ReviewResponse> search(ReviewSearchRequest request) {
-        SearchHits<ReviewDocument> search = reviewRepository.search(request);
+        Page<Review> search = reviewRepository.search(request);
 
-        List<ReviewResponse> contents = search.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
+        List<ReviewResponse> contents = search.stream()
+                .map(ReviewMapper::toResponse)
                 .toList();
-        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
+        return SearchResponse.of(contents, search.getTotalElements(), request.getPage(), search.getSize());
     }
 
     public SearchResponse<ReviewResponse> searchByUserInfo(ReviewSearchRequest request) {
-        SearchHits<ReviewDocument> search = reviewRepository.searchByUserInfo(request);
+        Page<Review> search = reviewRepository.searchByUserInfo(request);
 
-        List<ReviewResponse> contents = search.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .map(a -> ReviewMapper.toResponse(ReviewMapper.fromDocument(a)))
+        List<ReviewResponse> contents = search.stream()
+                .map(ReviewMapper::toResponse)
                 .toList();
-        return SearchResponse.of(contents, search.getTotalHits(), request.getPage(), search.getSearchHits().size());
+        return SearchResponse.of(contents, search.getTotalElements(), request.getPage(), search.getSize());
     }
 
 
