@@ -1,4 +1,4 @@
-package com.inspire12.likelionelasticsearch.module.store.domain.adapter;
+package com.inspire12.likelionelasticsearch.module.store.application;
 
 
 
