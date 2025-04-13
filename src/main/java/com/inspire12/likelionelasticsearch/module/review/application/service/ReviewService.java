@@ -1,5 +1,6 @@
 package com.inspire12.likelionelasticsearch.module.review.application.service;
 
+import com.inspire12.likelionelasticsearch.exception.OrderNotExistException;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
@@ -30,12 +31,12 @@ public class ReviewService {
         this.orderCheckPort = orderCheckPort;
     }
 
-    public void saveReview(ReviewRequest reviewRequest) {
+    public ReviewDocument saveReview(ReviewRequest reviewRequest) {
         if (!orderCheckPort.isOrdered(reviewRequest.getOrderId())) {
-            return;
+            throw new OrderNotExistException();
         }
         Review review = ReviewMapper.fromRequest(reviewRequest);
-        reviewRepository.save(review);
+        return reviewRepository.save(review);
     }
 
     public void saveReviewBulk(ReviewRequest reviewRequest) {
@@ -76,6 +77,13 @@ public class ReviewService {
         return SearchResponse.of(contents, search.getTotalElements(), request.getPage(), search.getSize());
     }
 
+    public SearchResponse<ReviewResponse> searchMatching(ReviewRequest request) {
+        List<Review> reviews = reviewRepository.searchByVector(request);
 
+        List<ReviewResponse> contents = reviews.stream()
+                .map(ReviewMapper::toResponse)
+                .toList();
+        return SearchResponse.of(contents, 0, 0, 0);
+    }
 
 }

@@ -29,6 +29,19 @@ Content-Type: application/json
     "userId": 1,
     "username": "inspire12",
     "email": "ox4443@naver.com"
+  },
+  "storeInfo": {
+    "storeId": 101,
+    "name": "학짜장",
+    "category": "중식",
+    "menus": [
+      "짜장면",
+      "볶음밥",
+      "탕수육"
+    ],
+    "rating": 4.3,
+    "location": "분당 서현역",
+    "description": "현지 느낌 물씬 나는 짜장면 전문점. 가격도 합리적이고 리뷰도 많음."
   }
 }
 
