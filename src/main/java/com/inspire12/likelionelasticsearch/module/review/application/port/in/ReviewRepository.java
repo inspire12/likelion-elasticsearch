@@ -27,4 +27,6 @@ public interface ReviewRepository {
     Page<Review> search(ReviewSearchRequest request);
 
     Page<Review> searchByUserInfo(ReviewSearchRequest request);
+
+    List<Review> searchByVector(ReviewRequest request);
 }

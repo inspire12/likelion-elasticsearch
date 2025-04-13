@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: ai
   application:
     name: likelion-elasticsearch
   elasticsearch:

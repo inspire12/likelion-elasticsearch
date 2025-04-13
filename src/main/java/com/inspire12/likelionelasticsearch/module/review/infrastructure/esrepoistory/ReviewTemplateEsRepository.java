@@ -20,4 +20,6 @@ public interface ReviewTemplateEsRepository {
     void saveBulk(List<ReviewDocument> reviews);
 
     ReviewDocument saveWithIndex(ReviewDocument reviewDocument);
+
+    List<ReviewDocument> searchSimilarReviews(ReviewDocument reviewDocument, int topK);
 }

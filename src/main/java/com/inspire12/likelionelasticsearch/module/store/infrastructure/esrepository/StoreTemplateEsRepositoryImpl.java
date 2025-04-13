@@ -1,11 +1,10 @@
-package com.inspire12.likelionelasticsearch.module.store.infrastructure.adpater;
+package com.inspire12.likelionelasticsearch.module.store.infrastructure.esrepository;
 
 // Elasticsearch Core (org.elasticsearch.*)
 
-import co.elastic.clients.elasticsearch._types.Script;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import co.elastic.clients.elasticsearch._types.query_dsl.ScriptScoreQuery;
 import co.elastic.clients.json.JsonData;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionelasticsearch.module.store.application.dto.request.StoreSearchRequest;
 import com.inspire12.likelionelasticsearch.module.store.infrastructure.document.StoreDocument;
 import org.springframework.data.domain.PageRequest;
@@ -29,8 +28,11 @@ import java.util.stream.Collectors;
 public class StoreTemplateEsRepositoryImpl implements StoreTemplateEsRepository {
     private final ElasticsearchOperations elasticsearchOperations;
     private final String indexNamePrefix = "store-";
-    public StoreTemplateEsRepositoryImpl(ElasticsearchOperations elasticsearchOperations) {
+    private final ObjectMapper objectMapper;
+
+    public StoreTemplateEsRepositoryImpl(ElasticsearchOperations elasticsearchOperations, ObjectMapper objectMapper) {
         this.elasticsearchOperations = elasticsearchOperations;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -57,18 +59,6 @@ public SearchHits<StoreDocument> search(StoreSearchRequest request) {
         return hits;
     }
 
-
-    @Override
-    public SearchHits<StoreDocument> searchByUserInfo(StoreSearchRequest request) {
-        String wildcardIndex = indexNamePrefix + "*";
-        NativeQuery nativeQuery = NativeQuery.builder()
-//                .withQuery(q -> q.term(t -> t.field("userInfo.username.keyword").value("inspire12")))
-                .build();
-//        nativeQuery.setPageable(PageRequest.of(request.getPage(), request.getSize()));
-
-        SearchHits<StoreDocument> hits = elasticsearchOperations.search(nativeQuery, StoreDocument.class, IndexCoordinates.of(wildcardIndex));
-        return hits;
-    }
     @Override
     public void saveBulk(List<StoreDocument> stores) {
         if (stores.isEmpty()) {
@@ -105,13 +95,21 @@ public SearchHits<StoreDocument> search(StoreSearchRequest request) {
 //                .build();
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.scriptScore(ss -> ss
-                        .script(script -> script
-                                .source("cosineSimilarity(params.query_vector, 'embedding') + 1.0")
-                                .params(Map.of("query_vector", JsonData.fromJson(storeDocument.toString())))
+                        .query(query -> query.matchAll(m -> m))
+                        .script(script -> {
+                                    try {
+                                        return script
+                                                .source("cosineSimilarity(params.vector, 'vector') + 1.0")
+                                                .params(Map.of("vector", JsonData.fromJson(objectMapper.writeValueAsString(storeDocument))));
+                                    } catch (JsonProcessingException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
                         )
                 ))
                 .withPageable(PageRequest.of(0, topK))
                 .build();
+
 
         return elasticsearchOperations.search(searchQuery, StoreDocument.class)
                 .map(SearchHit::getContent)

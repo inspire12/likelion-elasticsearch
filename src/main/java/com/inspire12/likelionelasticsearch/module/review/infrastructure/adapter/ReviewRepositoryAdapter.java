@@ -43,11 +43,11 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     public ReviewDocument save(Review review) {
 //        reviewEsRepository.save(ReviewMapper.toEntity(review));
 
-        ReviewDocument entity = ReviewMapper.toEntity(review);
-        Embedding embedding = embeddingService.getEmbedding(entity);
+        ReviewDocument document = ReviewMapper.toEntity(review);
+        Embedding embedding = embeddingService.getEmbedding(document);
 
-        entity.setEmbeddingFromOpenAi(embedding.getOutput());
-        return reviewEsRepository.saveWithIndex(entity);
+        document.setEmbeddingFromOpenAi(embedding.getOutput());
+        return reviewEsRepository.saveWithIndex(document);
 
     }
 

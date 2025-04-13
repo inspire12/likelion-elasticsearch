@@ -1,4 +1,4 @@
-package com.inspire12.likelionelasticsearch.module.store.infrastructure.adpater;
+package com.inspire12.likelionelasticsearch.module.store.infrastructure.esrepository;
 
 
 import com.inspire12.likelionelasticsearch.module.store.application.dto.request.StoreSearchRequest;
@@ -20,8 +20,6 @@ public interface StoreTemplateEsRepository {
 
     //    searchByNamedQuery
     SearchHits<StoreDocument> search(StoreSearchRequest request);
-
-    SearchHits<StoreDocument> searchByUserInfo(StoreSearchRequest request);
 
     void saveBulk(List<StoreDocument> stores);
 
