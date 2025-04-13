@@ -2,6 +2,9 @@ package com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoi
 
 // Elasticsearch Core (org.elasticsearch.*)
 
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch._types.query_dsl.ScriptScoreQuery;
+import co.elastic.clients.json.JsonData;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.request.ReviewSearchRequest;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 
@@ -10,15 +13,24 @@ import com.inspire12.likelionelasticsearch.module.review.infrastructure.document
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.Queries;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch._types.query_dsl.ScriptScoreQuery;
+import co.elastic.clients.elasticsearch._types.Script;
+
 
 // Java 기본 API
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -133,11 +145,36 @@ public class ReviewTemplateEsRepositoryImpl implements ReviewTemplateEsRepositor
         if (cleanedContent.length() > 1000) {
             cleanedContent = cleanedContent.substring(0, 1000);
         }
-        reviewDocument.setContent(cleanedContent);
+        reviewDocument.setClearContent(cleanedContent);
         // index pattern 날짜별
         String indexName = "reviews-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         elasticsearchOperations.save(reviewDocument, IndexCoordinates.of(indexName));
 
         return reviewDocument;
+    }
+
+
+    @Override
+    public List<ReviewDocument> searchSimilarReviews(ReviewDocument reviewDocument, int topK) {
+//        float[] queryEmbedding = embeddingService.getEmbedding(ReviewMapper.toEntity(review)).getOutput();
+
+        ScriptScoreQuery scriptScoreQuery = QueryBuilders.scriptScore()
+                .script(Script.of(s -> s
+
+                ))
+                .build();
+                                NativeQuery searchQuery = NativeQuery.builder()
+                .withQuery(q -> q.scriptScore(ss -> ss
+                        .script(script -> script
+                                .source("cosineSimilarity(params.query_vector, 'embedding') + 1.0")
+                                .params(Map.of("query_vector", JsonData.fromJson(reviewDocument.toString())))
+                        )
+                ))
+                .withPageable(PageRequest.of(0, topK))
+                .build();
+
+        return elasticsearchOperations.search(searchQuery, ReviewDocument.class)
+                .map(SearchHit::getContent)
+                .toList();
     }
 }

@@ -7,6 +7,7 @@ import com.inspire12.likelionelasticsearch.module.review.application.port.in.Rev
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 import com.inspire12.likelionelasticsearch.module.review.infrastructure.esrepoistory.ReviewEsRepository;
 import com.inspire12.likelionelasticsearch.module.review.support.ReviewMapper;
+import org.springframework.ai.embedding.Embedding;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +23,12 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
 
 //    private final ReviewJpaRepository reviewRepository;
     private final ReviewEsRepository reviewEsRepository;
+    private final EmbeddingService embeddingService;
 
-    public ReviewRepositoryAdapter(ReviewEsRepository reviewEsRepository) {
+
+    public ReviewRepositoryAdapter(ReviewEsRepository reviewEsRepository, EmbeddingService embeddingService) {
         this.reviewEsRepository = reviewEsRepository;
+        this.embeddingService = embeddingService;
     }
 
     @Override
@@ -36,9 +40,14 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
     }
 
     @Override
-    public void save(Review review) {
+    public ReviewDocument save(Review review) {
 //        reviewEsRepository.save(ReviewMapper.toEntity(review));
-        reviewEsRepository.saveWithIndex(ReviewMapper.toEntity(review));
+
+        ReviewDocument entity = ReviewMapper.toEntity(review);
+        Embedding embedding = embeddingService.getEmbedding(entity);
+
+        entity.setEmbeddingFromOpenAi(embedding.getOutput());
+        return reviewEsRepository.saveWithIndex(entity);
 
     }
 
@@ -66,5 +75,14 @@ public class ReviewRepositoryAdapter implements ReviewRepository {
                 .map(ReviewMapper::fromEntity)
                 .toList(),
                 PageRequest.of(request.getPage(), request.getSize()), searchHits.getTotalHits());
+    }
+
+    @Override
+    public List<Review> searchByVector(ReviewRequest request) {
+        List<ReviewDocument> reviewDocuments = reviewEsRepository.searchSimilarReviews(ReviewMapper.toEntity(ReviewMapper.fromRequest(request)), 5);
+
+        return reviewDocuments.stream()
+                .map(ReviewMapper::fromEntity)
+                .toList();
     }
 }

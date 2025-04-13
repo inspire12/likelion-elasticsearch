@@ -6,6 +6,7 @@ import com.inspire12.likelionelasticsearch.module.review.application.dto.respons
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.ReviewResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.dto.response.SearchResponse;
 import com.inspire12.likelionelasticsearch.module.review.application.service.ReviewService;
+import com.inspire12.likelionelasticsearch.module.review.infrastructure.document.ReviewDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +38,14 @@ public class ReviewController {
         return reviewService.searchByUserInfo(request);
     }
 
+    @PostMapping("/search/matching")
+    public SearchResponse<ReviewResponse> searchMatcing(@RequestBody ReviewRequest request) {
+        return reviewService.searchMatching(request);
+    }
+
     @PostMapping
-    public void saveReview(@RequestBody ReviewRequest reviewRequest) {
-        reviewService.saveReview(reviewRequest);
+    public ReviewDocument saveReview(@RequestBody ReviewRequest reviewRequest) {
+        return reviewService.saveReview(reviewRequest);
     }
 
     @PostMapping("/bulk")
