@@ -20,6 +20,9 @@ spring:
       hibernate:
         format_sql: true
 
+logging:
+  level:
+    org.springframework.data.elasticsearch.client: DEBUG
 
 server:
   port: 8084

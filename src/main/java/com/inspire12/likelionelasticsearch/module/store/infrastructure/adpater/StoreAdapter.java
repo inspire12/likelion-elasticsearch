@@ -35,7 +35,7 @@ public class StoreAdapter implements StoreRepository {
         StoreDocument document = StoreMapper.toDocument(store);
         Embedding embedding = embeddingStoreService.getEmbedding(document);
         document.setVectorFromOpenAi(embedding.getOutput());
-        return storeEsRepository.searchSimilarStores(StoreMapper.toDocument(store), 5)
+        return storeEsRepository.searchSimilarStores(document, 5)
                 .stream().map(StoreMapper::fromDocument).toList();
 
     }

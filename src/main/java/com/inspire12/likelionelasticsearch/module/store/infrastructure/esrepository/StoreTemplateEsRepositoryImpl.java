@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,9 +37,9 @@ public class StoreTemplateEsRepositoryImpl implements StoreTemplateEsRepository 
     }
 
 
-//    searchByNamedQuery
-@Override
-public SearchHits<StoreDocument> search(StoreSearchRequest request) {
+    //    searchByNamedQuery
+    @Override
+    public SearchHits<StoreDocument> search(StoreSearchRequest request) {
         // TODO content(store) 에서 확인, 다양한 패턴으로 검색 해보기
         String wildcardIndex = indexNamePrefix + "2025-*";
 
@@ -93,23 +94,26 @@ public SearchHits<StoreDocument> search(StoreSearchRequest request) {
 //
 //                ))
 //                .build();
+
+        float[] vector = storeDocument.getVector();
+        List<Float> queryVector = new ArrayList<>();
+        for (float f : vector) {
+            queryVector.add(f);
+        }
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.scriptScore(ss -> ss
                         .query(query -> query.matchAll(m -> m))
                         .script(script -> {
-                                    try {
-                                        return script
-                                                .source("cosineSimilarity(params.vector, 'vector') + 1.0")
-                                                .params(Map.of("vector", JsonData.fromJson(objectMapper.writeValueAsString(storeDocument))));
-                                    } catch (JsonProcessingException e) {
-                                        throw new RuntimeException(e);
-                                    }
+
+                                    return script
+                                            .source("cosineSimilarity(params.vector, 'vector') + 1.0")
+                                            .params(Map.of("vector", JsonData.of(queryVector)));
+
                                 }
                         )
                 ))
                 .withPageable(PageRequest.of(0, topK))
                 .build();
-
 
         return elasticsearchOperations.search(searchQuery, StoreDocument.class)
                 .map(SearchHit::getContent)
